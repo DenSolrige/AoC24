@@ -11,45 +11,35 @@ void Main()
 	// the rotated coordinates of (x,y) are ((x+y)/√2,(y−x)/√2).
 	// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
 	
-	// forget this, lets rotate this thing
-	//var gridLines = new List<string>();
-	//var xmasCount = 0;
-	//foreach (string line in File.ReadLines("C:/Users/wmoore/Documents/LINQPad Queries/inputs/4-test.txt"))
-	//{
-	//    gridLines.Add(line);
-	//}
-	//gridLines.Dump();
-	//
-	//var reverseGridLines = gridLines.Select(line => new string(line.Reverse().ToArray()));
-	////reverseGridLines.Dump();
-	//
-	//var verticalGridLines = new List<string>();
-	//for (int i = 0; i < gridLines[0].Length; i++) {
-	//	var verticalLine = new char[gridLines.Count];
-	//	for (int j = 0; j < gridLines.Count; j++) {
-	//		verticalLine[j] = gridLines[j][i];
-	//	}
-	//	verticalGridLines.Add(new string(verticalLine));
-	//}
-	////verticalGridLines.Dump();
-	//
-	//var reverseVerticalGridLines = verticalGridLines.Select(line => new string(line.Reverse().ToArray()));
-	//
-	//
-	//var northEastGridLines = new List<string>();
-	//for (int i = 0; i < gridLines.Count * 2 - 1; i++) {
-	//	var diagonalLine = new char[gridLines.Count];
-	//	if (i < gridLines.Count) {
-	//	
-	//	}
-	//	else {
-	//	
-	//	}
-	//	for (int j = 0; j < gridLines.Count; j++) {
-	//		verticalLine[j] = gridLines[j][i];
-	//	}
-	//	verticalGridLines.Add(new string(verticalLine));
-	//}
+	var gridNodes = new List<(double,double,char)>();
+	var xmasCount = 0;
+	int y = 0;
+	foreach (string line in File.ReadLines("C:/Users/wmoore/Documents/LINQPad Queries/inputs/4-test.txt"))
+	{
+		int x = 0;
+		foreach (char c in line) {
+	    	gridNodes.Add((x, y, c));
+			x++;
+		}
+		y--;
+	}
+	//gridNodes.Dump();
+	gridNodes = Utils.RotateNodes(gridNodes);
+	gridNodes.Dump();
+	gridNodes = Utils.RotateNodes(gridNodes);
+	gridNodes.Dump();
+	gridNodes = Utils.RotateNodes(gridNodes);
+	gridNodes.Dump();
+	gridNodes = Utils.RotateNodes(gridNodes);
+	gridNodes.Dump();
 }
 
-// You can define other methods, fields, classes and namespaces here
+class Utils {
+	public static List<(double,double,char)> RotateNodes(List<(double,double,char)> gridNodes) {
+		return gridNodes.Select(node => {
+			var x = (node.Item1 + node.Item2)/Math.Sqrt(2);
+			var y = (node.Item2 - node.Item1)/Math.Sqrt(2);
+			return (x, y, node.Item3);
+		}).ToList();
+	}
+}
