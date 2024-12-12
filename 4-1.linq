@@ -8,38 +8,78 @@
 
 void Main()
 {
-	// the rotated coordinates of (x,y) are ((x+y)/√2,(y−x)/√2).
-	// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
-	
-	var gridNodes = new List<(double,double,char)>();
+	var gridNodes = new List<char>();
 	var xmasCount = 0;
-	int y = 0;
-	foreach (string line in File.ReadLines("C:/Users/wmoore/Documents/LINQPad Queries/inputs/4-test.txt"))
+	var n = 0; // side length of the square
+	foreach (string line in File.ReadLines("C:/Users/wmoore/Documents/LINQPad Queries/inputs/4.txt"))
 	{
-		int x = 0;
 		foreach (char c in line) {
-	    	gridNodes.Add((x, y, c));
-			x++;
+	    	gridNodes.Add(c);
 		}
-		y--;
+		n++;
 	}
 	//gridNodes.Dump();
-	gridNodes = Utils.RotateNodes(gridNodes);
-	gridNodes.Dump();
-	gridNodes = Utils.RotateNodes(gridNodes);
-	gridNodes.Dump();
-	gridNodes = Utils.RotateNodes(gridNodes);
-	gridNodes.Dump();
-	gridNodes = Utils.RotateNodes(gridNodes);
-	gridNodes.Dump();
+	xmasCount += Util.CountXmasInHorizontal(gridNodes, n).Dump();
+	xmasCount += Util.CountXmasInDiagonal(gridNodes, n).Dump();
+	gridNodes = Util.RotateGrid90Degrees(gridNodes, n);
+	xmasCount += Util.CountXmasInHorizontal(gridNodes, n).Dump();
+	xmasCount += Util.CountXmasInDiagonal(gridNodes, n).Dump();
+	gridNodes = Util.RotateGrid90Degrees(gridNodes, n);
+	xmasCount += Util.CountXmasInHorizontal(gridNodes, n).Dump();
+	xmasCount += Util.CountXmasInDiagonal(gridNodes, n).Dump();
+	gridNodes = Util.RotateGrid90Degrees(gridNodes, n);
+	xmasCount += Util.CountXmasInHorizontal(gridNodes, n).Dump();
+	xmasCount += Util.CountXmasInDiagonal(gridNodes, n).Dump();
+	xmasCount.Dump();
 }
 
-class Utils {
-	public static List<(double,double,char)> RotateNodes(List<(double,double,char)> gridNodes) {
-		return gridNodes.Select(node => {
-			var x = (node.Item1 + node.Item2)/Math.Sqrt(2);
-			var y = (node.Item2 - node.Item1)/Math.Sqrt(2);
-			return (x, y, node.Item3);
-		}).ToList();
+class Util {
+	public static int CountXmasInHorizontal(List<char> gridNodes, int n) {
+		var xmasCount = 0;
+		for (int i = 0; i < n; i++) {
+			var line = new string(gridNodes.GetRange(i*n, n).ToArray());
+			line.Dump();
+			var matches = Regex.Matches(line, @"XMAS");
+			xmasCount += matches.Count;
+		}
+		return xmasCount;
+	}
+
+	public static int CountXmasInDiagonal(List<char> gridNodes, int n) {
+		var xmasCount = 0;
+		// top half and middle of diagonal
+		for (int i = 0; i <= n*(n-1); i+=n) {
+			var line = "";
+			for (int j = i; j >= i-(i/n)*(n-1); j-=n-1) {
+				line += gridNodes[j];
+			}
+			//line.Dump();
+			var matches = Regex.Matches(line, @"XMAS");
+			xmasCount += matches.Count;
+		}
+		// bottom half of diagonal
+		for (int i = n*(n-1)+1; i < n*n; i++) {
+			var line = "";
+			for (int j = i; j > i-(n*n-i)*(n-1); j-=n-1) {
+				line += gridNodes[j];
+			}
+			//line.Dump();
+			var matches = Regex.Matches(line, @"XMAS");
+			xmasCount += matches.Count;
+		}
+		return xmasCount;
+	}
+	
+	public static List<char> RotateGrid90Degrees(List<char> gridNodes, int n) {
+		var rotatedNodes = new char[n*n];
+		for (int i = 0; i < n*n; i++) {
+			int col = i%n;
+			int row = i/n;
+			int newCol = n - row;
+			int newRow = col;
+			int newIndex = newCol + n*newRow - 1;
+			rotatedNodes[newIndex] = gridNodes[i];
+		}
+		return rotatedNodes.ToList();
 	}
 }
