@@ -53,7 +53,7 @@ void Main()
 						}
 					}
 				}
-				pass.Dump();
+				//pass.Dump();
 			}
 			var middleIndex = update.Count / 2;
 			sum += update.FirstOrDefault(x => x.Value == middleIndex).Key;
