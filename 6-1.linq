@@ -18,7 +18,7 @@ void Main()
 		if (guardIndex != -1) guard = (guardIndex, height);
 		height++;
 	}
-	gridLines.Dump();
+	//gridLines.Dump();
 	bool exit = false;
 	var width = gridLines[0].Length;
 	var traversedSpots = new HashSet<(int,int)>();
